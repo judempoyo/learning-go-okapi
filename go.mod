@@ -1,8 +1,8 @@
-module okapi-api
+module github.com/judempoyo/learning-go-okapi
 
-go 1.26.0
+go 1.26.8
 
-require github.com/jkaninda/okapi v1.1.0
+require github.com/jkaninda/okapi v1.2.0
 
 require (
 	github.com/getkin/kin-openapi v0.151.0 // indirect
