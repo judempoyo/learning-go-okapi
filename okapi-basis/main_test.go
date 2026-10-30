@@ -6,6 +6,8 @@ import (
 
 	"github.com/jkaninda/okapi"
 	"github.com/jkaninda/okapi/okapitest"
+
+	"github.com/judempoyo/learning-go-okapi/model"
 )
 
 func TestHealthHandler(t *testing.T) {
@@ -43,7 +45,7 @@ func TestCreateBookHandler(t *testing.T) {
 	server := okapi.NewTestServer(t)
 	server.Post("/books", CreateBookHandler)
 
-	req := BookRequest{
+	req := model.BookRequest{
 		Title: "Advanced Go Programming",
 		Price: 50,
 	}
@@ -72,15 +74,15 @@ func TestCreateBookHandlerNegative(t *testing.T) {
 		ExpectStatusBadRequest()
 
 	okapitest.POST(t, server.BaseURL+"/books").
-		JSONBody(BookRequest{Title: "Go", Price: 50}).
+		JSONBody(model.BookRequest{Title: "Go", Price: 50}).
 		ExpectStatusBadRequest()
 
 	okapitest.POST(t, server.BaseURL+"/books").
-		JSONBody(BookRequest{Title: "Advanced Go", Price: 0}).
+		JSONBody(model.BookRequest{Title: "Advanced Go", Price: 0}).
 		ExpectStatusBadRequest()
 
 	okapitest.POST(t, server.BaseURL+"/books").
-		JSONBody(BookRequest{Title: "Advanced Go", Price: -10}).
+		JSONBody(model.BookRequest{Title: "Advanced Go", Price: -10}).
 		ExpectStatusBadRequest()
 
 	okapitest.POST(t, server.BaseURL+"/books").

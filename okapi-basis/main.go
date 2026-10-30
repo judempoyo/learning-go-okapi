@@ -6,51 +6,24 @@ import (
 	"net/http"
 
 	"github.com/jkaninda/okapi"
+
+	"github.com/judempoyo/learning-go-okapi/model"
 )
 
-type Book struct {
-	ID    string `json:"id"`
-	Name  string `json:"title" maxLength:"50" minLength:"5" required:"true" description:"Book name"`
-	Price int    `json:"price" min:"1" max:"100" required:"true" description:"Book price"`
-}
-
-type BookRequest struct {
-	Title string `json:"title" minLength:"3" example:"Learn Okapi framework" description:"Book title" required:"true"`
-	Price int    `json:"price"  exclusiveMin:"0" description:"Book price" required:"true"`
-}
-
-type GetBookRequest struct {
-	ID int `json:"id" required:"true"`
-}
-
-type Response struct {
-	Success bool   `json:"success"`
-	Status  int    `json:"status"`
-	Message string `json:"message"`
-	Data    any    `json:"data"`
-}
-
-type ErrorResponse struct {
-	Success bool `json:"success"`
-	Status  int  `json:"status"`
-	Message any  `json:"details"`
-	Data    any  `json:"data"`
-}
-
-func (req *BookRequest) GenerateId() Book {
+func generateID(req *model.BookRequest) model.Book {
 	id, _ := rand.Int(rand.Reader, big.NewInt(100))
 
-	return Book{
-		id.String(),
-		req.Title,
-		req.Price,
+	return model.Book{
+		ID:    id.String(),
+		Name:  req.Title,
+		Price: req.Price,
 	}
 }
 
 func CreateBookHandler(c *okapi.Context) error {
-	var req BookRequest
+	var req model.BookRequest
 	if err := c.Bind(&req); err != nil {
-		return c.ErrorBadRequest(ErrorResponse{
+		return c.ErrorBadRequest(model.ErrorResponse{
 			Success: false,
 			Status:  http.StatusBadRequest,
 			Message: err.Error(),
@@ -58,10 +31,10 @@ func CreateBookHandler(c *okapi.Context) error {
 		})
 	}
 
-	book := req.GenerateId()
+	book := generateID(&req)
 	books = append(books, book)
 
-	response := Response{
+	response := model.Response{
 		Success: true,
 		Status:  http.StatusCreated,
 		Message: "Book created succefully",
@@ -71,7 +44,7 @@ func CreateBookHandler(c *okapi.Context) error {
 
 }
 func HealthHandler(c *okapi.Context) error {
-	return c.OK(Response{
+	return c.OK(model.Response{
 		Success: true,
 		Status:  http.StatusOK,
 		Message: "Service healthy",
@@ -81,7 +54,7 @@ func HealthHandler(c *okapi.Context) error {
 
 func GetBooksHandler(c *okapi.Context) error {
 
-	return c.OK(Response{
+	return c.OK(model.Response{
 		Success: true,
 		Status:  http.StatusOK,
 		Message: "All books retrieved succefully",
@@ -93,7 +66,7 @@ func GetBookHandler(c *okapi.Context) error {
 	bookId := c.Param("id")
 
 	if bookId == "" {
-		return c.ErrorBadRequest(ErrorResponse{
+		return c.ErrorBadRequest(model.ErrorResponse{
 			Success: false,
 			Status:  http.StatusBadRequest,
 			Message: "Missing book id",
@@ -111,7 +84,7 @@ func GetBookHandler(c *okapi.Context) error {
 	}
 
 	if index == -1 {
-		return c.ErrorNotFound(ErrorResponse{
+		return c.ErrorNotFound(model.ErrorResponse{
 			Success: false,
 			Status:  http.StatusNotFound,
 			Message: "Book not found",
@@ -121,7 +94,7 @@ func GetBookHandler(c *okapi.Context) error {
 	}
 	book := books[index]
 
-	return c.OK(Response{
+	return c.OK(model.Response{
 		Success: true,
 		Status:  http.StatusOK,
 		Message: "Book retrieved succefully",
@@ -146,7 +119,7 @@ func DeleteBookHandler(c *okapi.Context) error {
 	}
 
 	if indexToDelete == -1 {
-		return c.ErrorNotFound(ErrorResponse{
+		return c.ErrorNotFound(model.ErrorResponse{
 			Success: false,
 			Status:  http.StatusNotFound,
 			Message: "Book not found",
@@ -164,42 +137,42 @@ func DeleteBookHandler(c *okapi.Context) error {
 	})
 }
 
-var books = []Book{
-	{"1", "Go tour", 100},
-	{"2", "Miabi ", 50},
-	{"3", "Apprendre posta", 12},
+var books = []model.Book{
+	{ID: "1", Name: "Go tour", Price: 100},
+	{ID: "2", Name: "Miabi ", Price: 50},
+	{ID: "3", Name: "Apprendre posta", Price: 12},
 }
 
 func main() {
 	o := okapi.Default()
 
 	o.Post("/books", CreateBookHandler, okapi.DocSummary("Create a new Book"),
-		okapi.DocRequestBody(BookRequest{}),
-		okapi.DocResponse(Response{}),
-		okapi.DocResponse(http.StatusBadRequest, ErrorResponse{}),
-		okapi.DocResponse(http.StatusInternalServerError, ErrorResponse{}),
+		okapi.DocRequestBody(model.BookRequest{}),
+		okapi.DocResponse(model.Response{}),
+		okapi.DocResponse(http.StatusBadRequest, model.ErrorResponse{}),
+		okapi.DocResponse(http.StatusInternalServerError, model.ErrorResponse{}),
 	)
 
-	o.Delete("/books/{id:int}", DeleteBookHandler, okapi.DocResponse(Response{}),
-		okapi.DocResponse(http.StatusBadRequest, ErrorResponse{}),
-		okapi.DocResponse(http.StatusInternalServerError, ErrorResponse{}))
+	o.Delete("/books/{id:int}", DeleteBookHandler, okapi.DocResponse(model.Response{}),
+		okapi.DocResponse(http.StatusBadRequest, model.ErrorResponse{}),
+		okapi.DocResponse(http.StatusInternalServerError, model.ErrorResponse{}))
 	o.Get("/health", HealthHandler,
 
-		okapi.DocResponse(Response{}),
-		okapi.DocResponse(http.StatusBadRequest, ErrorResponse{}),
-		okapi.DocResponse(http.StatusInternalServerError, ErrorResponse{}))
+		okapi.DocResponse(model.Response{}),
+		okapi.DocResponse(http.StatusBadRequest, model.ErrorResponse{}),
+		okapi.DocResponse(http.StatusInternalServerError, model.ErrorResponse{}))
 
 	o.Get("books", GetBooksHandler,
-		okapi.DocResponse(Response{}),
-		okapi.DocResponse(http.StatusBadRequest, ErrorResponse{}),
-		okapi.DocResponse(http.StatusInternalServerError, ErrorResponse{}),
+		okapi.DocResponse(model.Response{}),
+		okapi.DocResponse(http.StatusBadRequest, model.ErrorResponse{}),
+		okapi.DocResponse(http.StatusInternalServerError, model.ErrorResponse{}),
 	)
 
 	o.Get("/books/{id:int}", GetBookHandler,
 
-		okapi.DocResponse(Response{}),
-		okapi.DocResponse(http.StatusBadRequest, ErrorResponse{}),
-		okapi.DocResponse(http.StatusInternalServerError, ErrorResponse{}))
+		okapi.DocResponse(model.Response{}),
+		okapi.DocResponse(http.StatusBadRequest, model.ErrorResponse{}),
+		okapi.DocResponse(http.StatusInternalServerError, model.ErrorResponse{}))
 
 	if err := o.Start(); err != nil {
 		panic(err)
