@@ -9,17 +9,17 @@ import (
 	"github.com/judempoyo/learning-go-okapi/go-modules-packages/services"
 )
 
-func GetBooksHandler(bookService *services.BookService) func(*okapi.Context) error {
+func GetBooksHandler(bs *services.BookService) func(*okapi.Context) error {
 	return func(c *okapi.Context) error {
 		return c.OK(models.Response{
 			Success: true,
 			Status:  http.StatusOK,
 			Message: "All books retrieved succefully",
-			Data:    bookService.Store.Books,
+			Data:    bs.FindAllBooks(),
 		})
 	}
 }
-func GetBoookHandler(bookservices *services.BookService) func(*okapi.Context) error {
+func GetBoookHandler(bs *services.BookService) func(*okapi.Context) error {
 	return func(c *okapi.Context) error {
 
 		bookTitle := c.Param("title")
@@ -33,7 +33,7 @@ func GetBoookHandler(bookservices *services.BookService) func(*okapi.Context) er
 			})
 		}
 		
-		b, err := bookservices.FindBook(bookTitle)
+		b, err := bs.FindBook(bookTitle)
 
 		if err != nil {
 			return c.ErrorNotFound(models.ErrorResponse{
@@ -53,7 +53,7 @@ func GetBoookHandler(bookservices *services.BookService) func(*okapi.Context) er
 		return c.OK(response)
 	}
 }
-func DeleteBoookHandler(bookservices *services.BookService) func(*okapi.Context) error {
+func DeleteBoookHandler(bs *services.BookService) func(*okapi.Context) error {
 	return func(c *okapi.Context) error {
 		var req models.GetBookRequest
 		if err := c.Bind(&req); err != nil {
@@ -64,7 +64,7 @@ func DeleteBoookHandler(bookservices *services.BookService) func(*okapi.Context)
 				Data:    nil,
 			})
 		}
-		msg, err := bookservices.DeleteBookWithValidation(req.Title)
+		err := bs.DeleteBookWithValidation(req.Title)
 
 		if err != nil {
 			return c.ErrorNotFound(models.ErrorResponse{
@@ -78,13 +78,13 @@ func DeleteBoookHandler(bookservices *services.BookService) func(*okapi.Context)
 		response := models.Response{
 			Success: true,
 			Status:  http.StatusOK,
-			Message: msg,
+			Message: "Book succeffuly deleted",
 			Data:    nil,
 		}
 		return c.OK(response)
 	}
 }
-func CreateBookHandler(bookService *services.BookService) func(*okapi.Context) error {
+func CreateBookHandler(bs *services.BookService) func(*okapi.Context) error {
 	return func(c *okapi.Context) error {
 		var req models.BookRequest
 		if err := c.Bind(&req); err != nil {
@@ -96,7 +96,7 @@ func CreateBookHandler(bookService *services.BookService) func(*okapi.Context) e
 			})
 		}
 
-		book, err := bookService.AddBookWithValidation(&req)
+		book, err := bs.AddBookWithValidation(&req)
 		if err != nil {
 			return c.ErrorBadRequest(models.ErrorResponse{
 				Success: false,

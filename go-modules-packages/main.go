@@ -33,7 +33,7 @@ func main() {
 		okapi.DocResponse(http.StatusInternalServerError, models.ErrorResponse{}),
 	)
 
-	o.Get("/books/{title: string}", handlers.GetBoookHandler(bookService), okapi.DocSummary("Delete a Book"),
+	o.Get("/books/{title: string}", handlers.GetBoookHandler(bookService), okapi.DocSummary("Get a Book"),
 		okapi.DocResponse(models.Response{}),
 		okapi.DocResponse(http.StatusBadRequest, models.ErrorResponse{}),
 		okapi.DocResponse(http.StatusInternalServerError, models.ErrorResponse{}),

@@ -1,69 +1,58 @@
 package services
 
 import (
-	"crypto/rand"
 	"errors"
-	"math/big"
 
 	"github.com/judempoyo/learning-go-okapi/go-modules-packages/models"
 )
 
+type BookRepository interface {
+	FindAll() []models.Book
+	FindByTitle(title string) (models.Book, error)
+	Create(book models.Book) (models.Book, error)
+	DeleteByTitle(title string) error
+}
+
 type BookService struct {
-	Store *models.BookStore
+	repo BookRepository
 }
 
-func NewBookService(store *models.BookStore) *BookService {
-	return &BookService{Store: store}
-}
-
-func GenerateID(req *models.BookRequest) models.Book {
-	id, _ := rand.Int(rand.Reader, big.NewInt(100))
-
-	return models.Book{
-		ID:    int(id.Int64()),
-		Title: req.Title,
-		Price: req.Price,
+func NewBookService(repo BookRepository) *BookService {
+	return &BookService{
+		repo: repo,
 	}
 }
 
-func (s *BookService) AddBookWithValidation(req *models.BookRequest) (*models.Book, error) {
-	for _, b := range s.Store.Books {
-		if b.Title == req.Title {
-			return nil, errors.New("this book exist")
-		}
+func (bs *BookService) AddBookWithValidation(req *models.BookRequest) (*models.Book, error) {
+
+	b, err := bs.repo.Create(models.Book{Title: req.Title, Price: req.Price})
+	if err != nil {
+		return nil, errors.New("Unable to create the book")
 	}
 
-	b := GenerateID(req)
-
-	s.Store.Add(b)
-
-	println(s)
 	return &b, nil
 }
 
-func (s *BookService) FindBook(title string) (*models.Book, error) {
-	i := s.Store.Search(title)
+func (bs *BookService) FindAllBooks() []models.Book {
+	return bs.repo.FindAll()
+}
 
-	if i == -1 {	
-		return nil , errors.New("Book not found")
+func (bs *BookService) FindBook(title string) (*models.Book, error) {
+	b, err := bs.repo.FindByTitle(title)
+	if err != nil {
+		return nil, err
 	}
-
-	b := s.Store.Books[i]
 
 	return &b, nil
 
 }
-func (s *BookService) DeleteBookWithValidation(title string) (string, error) {
+func (bs *BookService) DeleteBookWithValidation(title string) error {
 
-	i := s.Store.Search(title)
-
-	if i == -1 {	
-		return "" , errors.New("Book not found")
+	err := bs.repo.DeleteByTitle(title)
+	if err != nil {
+		return err
 	}
 
-	s.Store.Delete(i)
+	return nil
 
-	return "Book succefully deleted", nil
-
-	
 }
