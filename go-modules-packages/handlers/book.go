@@ -78,7 +78,7 @@ func DeleteBoookHandler(bs *services.BookService) func(*okapi.Context) error {
 		response := models.Response{
 			Success: true,
 			Status:  http.StatusOK,
-			Message: "Book succeffuly deleted",
+			Message: "Book succefully deleted",
 			Data:    nil,
 		}
 		return c.OK(response)

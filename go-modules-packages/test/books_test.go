@@ -76,7 +76,7 @@ func TestDeleteBookHandler(t *testing.T) {
 	okapitest.DELETE(t, server.BaseURL+"/books").
 		JSONBody(req).
 		ExpectStatusOK().
-		ExpectBodyContains("Book succefully deleted")
+		ExpectJSONPath("message", "Book succefully deleted")
 }
 func TestCreateBookHandlerNegative(t *testing.T) {
 	server := okapi.NewTestServer(t)
