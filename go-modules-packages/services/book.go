@@ -27,7 +27,7 @@ func (bs *BookService) AddBookWithValidation(req *models.BookRequest) (*models.B
 
 	b, err := bs.repo.Create(models.Book{Title: req.Title, Price: req.Price})
 	if err != nil {
-		return nil, errors.New("Unable to create the book")
+		return nil, errors.New("unable to create the book")
 	}
 
 	return &b, nil

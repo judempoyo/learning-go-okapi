@@ -14,12 +14,12 @@ func GetBooksHandler(bs *services.BookService) func(*okapi.Context) error {
 		return c.OK(models.Response{
 			Success: true,
 			Status:  http.StatusOK,
-			Message: "All books retrieved succefully",
+			Message: "All books retrieved successfully",
 			Data:    bs.FindAllBooks(),
 		})
 	}
 }
-func GetBoookHandler(bs *services.BookService) func(*okapi.Context) error {
+func GetBookHandler(bs *services.BookService) func(*okapi.Context) error {
 	return func(c *okapi.Context) error {
 
 		bookTitle := c.Param("title")
@@ -47,13 +47,13 @@ func GetBoookHandler(bs *services.BookService) func(*okapi.Context) error {
 		response := models.Response{
 			Success: true,
 			Status:  http.StatusOK,
-			Message: "Book retrieved succefully",
+			Message: "Book retrieved successfully",
 			Data:    b,
 		}
 		return c.OK(response)
 	}
 }
-func DeleteBoookHandler(bs *services.BookService) func(*okapi.Context) error {
+func DeleteBookHandler(bs *services.BookService) func(*okapi.Context) error {
 	return func(c *okapi.Context) error {
 		var req models.GetBookRequest
 		if err := c.Bind(&req); err != nil {
@@ -78,7 +78,7 @@ func DeleteBoookHandler(bs *services.BookService) func(*okapi.Context) error {
 		response := models.Response{
 			Success: true,
 			Status:  http.StatusOK,
-			Message: "Book succefully deleted",
+			Message: "Book successfully deleted",
 			Data:    nil,
 		}
 		return c.OK(response)
@@ -109,7 +109,7 @@ func CreateBookHandler(bs *services.BookService) func(*okapi.Context) error {
 		response := models.Response{
 			Success: true,
 			Status:  http.StatusCreated,
-			Message: "Book created succefully",
+			Message: "Book created successfully",
 			Data:    book,
 		}
 		return c.Created(response)

@@ -37,7 +37,7 @@ func CreateBookHandler(c *okapi.Context) error {
 	response := model.Response{
 		Success: true,
 		Status:  http.StatusCreated,
-		Message: "Book created succefully",
+		Message: "Book created successfully",
 		Data:    book,
 	}
 	return c.Created(response)
@@ -57,7 +57,7 @@ func GetBooksHandler(c *okapi.Context) error {
 	return c.OK(model.Response{
 		Success: true,
 		Status:  http.StatusOK,
-		Message: "All books retrieved succefully",
+		Message: "All books retrieved successfully",
 		Data:    books,
 	})
 }
@@ -97,7 +97,7 @@ func GetBookHandler(c *okapi.Context) error {
 	return c.OK(model.Response{
 		Success: true,
 		Status:  http.StatusOK,
-		Message: "Book retrieved succefully",
+		Message: "Book retrieved successfully",
 		Data:    book,
 	})
 }

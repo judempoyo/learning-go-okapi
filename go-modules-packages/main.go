@@ -26,14 +26,14 @@ func main() {
 		okapi.DocResponse(http.StatusBadRequest, models.ErrorResponse{}),
 		okapi.DocResponse(http.StatusInternalServerError, models.ErrorResponse{}),
 	)
-	o.Delete("/books", handlers.DeleteBoookHandler(bookService), okapi.DocSummary("Delete a Book"),
+	o.Delete("/books", handlers.DeleteBookHandler(bookService), okapi.DocSummary("Delete a Book"),
 		okapi.DocRequestBody(models.GetBookRequest{}),
 		okapi.DocResponse(models.Response{}),
 		okapi.DocResponse(http.StatusBadRequest, models.ErrorResponse{}),
 		okapi.DocResponse(http.StatusInternalServerError, models.ErrorResponse{}),
 	)
 
-	o.Get("/books/{title: string}", handlers.GetBoookHandler(bookService), okapi.DocSummary("Get a Book"),
+	o.Get("/books/{title: string}", handlers.GetBookHandler(bookService), okapi.DocSummary("Get a Book"),
 		okapi.DocResponse(models.Response{}),
 		okapi.DocResponse(http.StatusBadRequest, models.ErrorResponse{}),
 		okapi.DocResponse(http.StatusInternalServerError, models.ErrorResponse{}),

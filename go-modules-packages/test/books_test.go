@@ -10,7 +10,6 @@ import (
 	"github.com/judempoyo/learning-go-okapi/go-modules-packages/handlers"
 	"github.com/judempoyo/learning-go-okapi/go-modules-packages/models"
 	"github.com/judempoyo/learning-go-okapi/go-modules-packages/services"
-	"github.com/judempoyo/learning-go-okapi/model"
 )
 
 func initiateStore() *services.BookService {
@@ -36,7 +35,7 @@ func TestGetBookHandler(t *testing.T) {
 	server := okapi.NewTestServer(t)
 	bs := initiateStore()
 
-	server.Get("/books/{title:string}", handlers.GetBoookHandler(bs))
+	server.Get("/books/{title:string}", handlers.GetBookHandler(bs))
 
 	okapitest.GET(t, server.BaseURL+"/books/Miabi").
 		ExpectStatusOK().
@@ -53,7 +52,7 @@ func TestCreateBookHandler(t *testing.T) {
 
 	server.Post("/books", handlers.CreateBookHandler(bs))
 
-	req := model.BookRequest{
+	req := models.BookRequest{
 		Title: "Advanced Go Programming",
 		Price: 50,
 	}
@@ -68,16 +67,16 @@ func TestDeleteBookHandler(t *testing.T) {
 	server := okapi.NewTestServer(t)
 
 	bs := initiateStore()
-	server.Delete("/books", handlers.DeleteBoookHandler(bs))
+	server.Delete("/books", handlers.DeleteBookHandler(bs))
 
-	req := model.BookRequest{
+	req := models.BookRequest{
 		Title: "Miabi",
 	}
 
 	okapitest.DELETE(t, server.BaseURL+"/books").
 		JSONBody(req).
 		ExpectStatusOK().
-		ExpectJSONPath("message", "Book succefully deleted")
+		ExpectJSONPath("message", "Book successfully deleted")
 }
 func TestCreateBookHandlerNegative(t *testing.T) {
 	server := okapi.NewTestServer(t)
@@ -90,15 +89,15 @@ func TestCreateBookHandlerNegative(t *testing.T) {
 		ExpectStatusBadRequest()
 
 	okapitest.POST(t, server.BaseURL+"/books").
-		JSONBody(model.BookRequest{Title: "Go", Price: 50}).
+		JSONBody(models.BookRequest{Title: "Go", Price: 50}).
 		ExpectStatusBadRequest()
 
 	okapitest.POST(t, server.BaseURL+"/books").
-		JSONBody(model.BookRequest{Title: "Advanced Go", Price: 0}).
+		JSONBody(models.BookRequest{Title: "Advanced Go", Price: 0}).
 		ExpectStatusBadRequest()
 
 	okapitest.POST(t, server.BaseURL+"/books").
-		JSONBody(model.BookRequest{Title: "Advanced Go", Price: -10}).
+		JSONBody(models.BookRequest{Title: "Advanced Go", Price: -10}).
 		ExpectStatusBadRequest()
 
 	okapitest.POST(t, server.BaseURL+"/books").
@@ -114,14 +113,14 @@ func TestDeleteBookHandlerNegative(t *testing.T) {
 	server := okapi.NewTestServer(t)
 
 	bs := initiateStore()
-	server.Delete("/books", handlers.DeleteBoookHandler(bs))
+	server.Delete("/books", handlers.DeleteBookHandler(bs))
 
-	req := model.BookRequest{
+	req := models.BookRequest{
 		Title: "inexistantbook",
 	}
 
 	okapitest.DELETE(t, server.BaseURL+"/books").
 		JSONBody(req).
 		ExpectStatusNotFound().
-		ExpectBodyContains("Book not found")
+		ExpectBodyContains("book not found")
 }

@@ -44,7 +44,7 @@ func NewBookStore() *BookStore {
 		books: []Book{
 			{ID: 1, Title: "Go tour", Price: 100},
 			{ID: 2, Title: "Miabi", Price: 50},
-			{ID: 3, Title: "Apprendre posta", Price: 12},
+			{ID: 3, Title: "Learn okapi", Price: 12},
 		},
 	}
 }
@@ -63,13 +63,13 @@ func (bs *BookStore) FindByTitle(title string) (Book, error) {
 		}
 	}
 
-	return Book{}, errors.New("Book not found")
+	return Book{}, errors.New("book not found")
 }
 func (bs *BookStore) Create(b Book) (Book, error) {
 
 	_, err := bs.FindByTitle(b.Title)
 	if err == nil {
-		return Book{}, errors.New("Similar book already exist")
+		return Book{}, errors.New("similar book already exist")
 	}
 	id, _ := rand.Int(rand.Reader, big.NewInt(100))
 	b.ID = int(id.Int64())
@@ -84,28 +84,6 @@ func (bs *BookStore) DeleteByTitle(title string) error {
 		}
 	}
 
-	return errors.New("Book not found")
+	return errors.New("book not found")
 
 }
-
-/*
-func (s *BookStore)	Add (b Book) {
-	s.books = append(s.books, b)
-}
-
-func (s *BookStore) Delete(index int) {
-
-	s.books = append(s.books[:index], s.books[index+1:]...)
-}
-
-func (s *BookStore) Search(title string) (int){
-	index := -1
-	for i, b := range s.books {
-		if b.Title == title {
-			index = i
-		}
-	}
-
-	return index
-
-} */
