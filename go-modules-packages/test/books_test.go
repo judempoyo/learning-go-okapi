@@ -12,17 +12,18 @@ import (
 	"github.com/judempoyo/learning-go-okapi/go-modules-packages/services"
 	"github.com/judempoyo/learning-go-okapi/model"
 )
-func initiateStore () *services.BookService {
+
+func initiateStore() *services.BookService {
 
 	bookStore := models.NewBookStore()
 	bookService := services.NewBookService(bookStore)
 
-	return  bookService
+	return bookService
 }
 
 func TestGetBooksHandler(t *testing.T) {
 	server := okapi.NewTestServer(t)
-		bs := initiateStore()
+	bs := initiateStore()
 
 	server.Get("/books", handlers.GetBooksHandler(bs))
 
@@ -33,7 +34,7 @@ func TestGetBooksHandler(t *testing.T) {
 
 func TestGetBookHandler(t *testing.T) {
 	server := okapi.NewTestServer(t)
-		bs := initiateStore()
+	bs := initiateStore()
 
 	server.Get("/books/{title:string}", handlers.GetBoookHandler(bs))
 
@@ -48,7 +49,7 @@ func TestGetBookHandler(t *testing.T) {
 
 func TestCreateBookHandler(t *testing.T) {
 	server := okapi.NewTestServer(t)
-		bs := initiateStore()
+	bs := initiateStore()
 
 	server.Post("/books", handlers.CreateBookHandler(bs))
 

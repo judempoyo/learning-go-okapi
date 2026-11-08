@@ -32,7 +32,7 @@ func GetBoookHandler(bs *services.BookService) func(*okapi.Context) error {
 				Data:    nil,
 			})
 		}
-		
+
 		b, err := bs.FindBook(bookTitle)
 
 		if err != nil {

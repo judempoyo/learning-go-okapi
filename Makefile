@@ -1,4 +1,4 @@
-.PHONY: new run tidy list
+.PHONY: new run tidy list fmt vet
 
 # make new name=auth
 new:
@@ -17,3 +17,9 @@ tidy:
 
 list:
 	@ls -d */ | grep -v '^_'
+
+fmt:
+	gofmt -w .
+
+vet:
+	go vet ./...

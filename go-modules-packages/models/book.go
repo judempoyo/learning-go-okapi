@@ -7,8 +7,8 @@ import (
 )
 
 type Book struct {
-	ID    int `json:"id"`
-	Title  string `json:"title" maxLength:"50" minLength:"5" required:"true" description:"Book name"`
+	ID    int    `json:"id"`
+	Title string `json:"title" maxLength:"50" minLength:"5" required:"true" description:"Book name"`
 	Price int    `json:"price" min:"1" max:"100" required:"true" description:"Book price"`
 }
 
@@ -50,16 +50,16 @@ func NewBookStore() *BookStore {
 }
 
 func (bs *BookStore) FindAll() []Book {
-	 books := make([]Book, len(bs.books))
-    copy(books, bs.books)
+	books := make([]Book, len(bs.books))
+	copy(books, bs.books)
 
-    return books
+	return books
 }
 
 func (bs *BookStore) FindByTitle(title string) (Book, error) {
 	for _, b := range bs.books {
 		if b.Title == title {
-			return  b, nil
+			return b, nil
 		}
 	}
 
@@ -74,7 +74,7 @@ func (bs *BookStore) Create(b Book) (Book, error) {
 	id, _ := rand.Int(rand.Reader, big.NewInt(100))
 	b.ID = int(id.Int64())
 	bs.books = append(bs.books, b)
-	return b,nil
+	return b, nil
 }
 func (bs *BookStore) DeleteByTitle(title string) error {
 	for i, b := range bs.books {
@@ -87,13 +87,14 @@ func (bs *BookStore) DeleteByTitle(title string) error {
 	return errors.New("Book not found")
 
 }
-/* 
+
+/*
 func (s *BookStore)	Add (b Book) {
 	s.books = append(s.books, b)
 }
 
 func (s *BookStore) Delete(index int) {
-  
+
 	s.books = append(s.books[:index], s.books[index+1:]...)
 }
 
